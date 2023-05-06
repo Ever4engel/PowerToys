@@ -98,6 +98,7 @@ APSTUDIO
 AQS
 ARCHITEW
 archivepreviewhandler
+ARCHIVEPREVIEWHANDLERCPP
 arcosh
 ARemapped
 argb
