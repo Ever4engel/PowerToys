@@ -62,17 +62,17 @@ namespace Hosts.Helpers
             return _fileSystem.File.Exists(HostsFilePath);
         }
 
-        public async Task<(string Unparsed, List<Entry> Entries)> ReadAsync()
+        public async Task<HostsData> ReadAsync()
         {
-            var entries = new List<Entry>();
-            var unparsedBuilder = new StringBuilder();
-
             if (!Exists())
             {
-                return (unparsedBuilder.ToString(), entries);
+                return new HostsData();
             }
 
             var lines = await _fileSystem.File.ReadAllLinesAsync(HostsFilePath);
+            var entries = new List<Entry>(lines.Length);
+            var unparsedBuilder = new StringBuilder();
+            bool hostsExceedingMaxFound = false;
 
             for (var i = 0; i < lines.Length; i++)
             {
@@ -84,10 +84,15 @@ namespace Hosts.Helpers
                 }
 
                 var entry = new Entry(i, line);
+                var aligned = entry.AlignHostsExceedingMax();
 
                 if (entry.Valid)
                 {
                     entries.Add(entry);
+                    if (!hostsExceedingMaxFound && aligned)
+                    {
+                        hostsExceedingMaxFound = true;
+                    }
                 }
                 else
                 {
@@ -100,7 +105,7 @@ namespace Hosts.Helpers
                 }
             }
 
-            return (unparsedBuilder.ToString(), entries);
+            return new HostsData(unparsedBuilder.ToString(), entries, hostsExceedingMaxFound);
         }
 
         public async Task<bool> WriteAsync(string additionalLines, IEnumerable<Entry> entries)

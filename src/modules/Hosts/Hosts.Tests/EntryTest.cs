@@ -79,5 +79,17 @@ namespace Hosts.Tests
             var entry = new Entry(0, line);
             Assert.IsFalse(entry.Valid);
         }
+
+        [DataTestMethod]
+        [DataRow("host host01 host02 host03 host04 host05 host06 host07 host09 host10", "", "host host01 host02 host03 host04 host05 host06 host07 host09", "host10")]
+        [DataRow("host host01 host02 host03 host04 host05 host06 host07 host09 host10", "comment", "host host01 host02 host03 host04 host05 host06 host07 host09", "comment - host10")]
+        public void Hosts_Exceeding_Max_Number_Aligned(string hosts, string comment, string expectedHosts, string expectedComment)
+        {
+            var entry = new Entry(0, "10.1.1.1", hosts, comment, true);
+            entry.AlignHostsExceedingMax();
+
+            Assert.AreEqual(entry.Hosts, expectedHosts);
+            Assert.AreEqual(entry.Comment, expectedComment);
+        }
     }
 }

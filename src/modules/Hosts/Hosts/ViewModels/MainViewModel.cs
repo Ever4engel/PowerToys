@@ -68,6 +68,9 @@ namespace Hosts.ViewModels
         [ObservableProperty]
         private bool _showOnlyDuplicates;
 
+        [ObservableProperty]
+        private bool _anyHostsExceedingMaxTipOpen;
+
         partial void OnShowOnlyDuplicatesChanged(bool value)
         {
             ApplyFilters();
@@ -164,12 +167,13 @@ namespace Hosts.ViewModels
             Task.Run(async () =>
             {
                 _readingHosts = true;
-                var (additionalLines, entries) = await _hostsService.ReadAsync();
+                var hostsData = await _hostsService.ReadAsync();
 
                 await _dispatcherQueue.EnqueueAsync(() =>
                 {
-                    AdditionalLines = additionalLines;
-                    _entries = new ObservableCollection<Entry>(entries);
+                    AdditionalLines = hostsData.Unparsed;
+                    AnyHostsExceedingMaxTipOpen = hostsData.HostsExceedingMaxFound;
+                    _entries = new ObservableCollection<Entry>(hostsData.Entries);
 
                     foreach (var e in _entries)
                     {
@@ -347,12 +351,28 @@ namespace Hosts.ViewModels
                 return;
             }
 
-            var hosts = entry.SplittedHosts;
+            var duplicate = false;
 
-            var duplicate = _entries.FirstOrDefault(e => e != entry
+            /*
+             * Duplicate are based on the following criteria:
+             * Entries with the same type and at least one host in common
+             * Entries with the same type and address, except when there is only one entry with less than 9 hosts for that type and address
+             */
+            if (_entries.Any(e => e != entry
                 && e.Type == entry.Type
-                && (string.Equals(e.Address, entry.Address, StringComparison.OrdinalIgnoreCase)
-                    || hosts.Intersect(e.SplittedHosts, StringComparer.OrdinalIgnoreCase).Any())) != null;
+                && entry.SplittedHosts.Intersect(e.SplittedHosts, StringComparer.OrdinalIgnoreCase).Any()))
+            {
+                duplicate = true;
+            }
+            else if (_entries.Any(e => e != entry
+                && e.Type == entry.Type
+                && string.Equals(e.Address, entry.Address, StringComparison.OrdinalIgnoreCase)))
+            {
+                duplicate = entry.SplittedHosts.Length < Consts.MaxHostsCount
+                    && _entries.Count(e => e.Type == entry.Type
+                        && string.Equals(e.Address, entry.Address, StringComparison.OrdinalIgnoreCase)
+                        && e.SplittedHosts.Length < Consts.MaxHostsCount) > 1;
+            }
 
             _dispatcherQueue.TryEnqueue(() =>
             {

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -155,6 +156,27 @@ namespace Hosts.Models
                 Comment = Comment,
                 Active = Active,
             };
+        }
+
+        public bool AlignHostsExceedingMax()
+        {
+            if (SplittedHosts.Length > Consts.MaxHostsCount)
+            {
+                var splittedHosts = Hosts.Split(' ');
+                Hosts = string.Join(' ', splittedHosts.Take(Consts.MaxHostsCount));
+
+                var commentBuilder = new StringBuilder(Comment);
+                if (commentBuilder.Length > 0)
+                {
+                    commentBuilder.Append(" - ");
+                }
+
+                commentBuilder.Append(string.Join(' ', splittedHosts.Skip(Consts.MaxHostsCount).Take(splittedHosts.Length)));
+                Comment = commentBuilder.ToString();
+                return true;
+            }
+
+            return false;
         }
     }
 }

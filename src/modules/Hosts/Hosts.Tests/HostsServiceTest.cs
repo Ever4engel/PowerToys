@@ -2,6 +2,7 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,8 +70,12 @@ namespace Hosts.Tests
             var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
             fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
 
-            var (_, entries) = await service.ReadAsync();
-            entries.Add(new Entry(0, "10.1.1.30", "host30 host30.local", "new entry", false));
+            var hostsData = await service.ReadAsync();
+            var entries = new List<Entry>(hostsData.Entries)
+            {
+                new Entry(0, "10.1.1.30", "host30 host30.local", "new entry", false),
+            };
+
             await service.WriteAsync(string.Empty, entries);
 
             var result = fileSystem.GetFile(service.HostsFilePath);
@@ -94,7 +99,8 @@ namespace Hosts.Tests
             var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
             fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
 
-            var (_, entries) = await service.ReadAsync();
+            var hostsData = await service.ReadAsync();
+            var entries = new List<Entry>(hostsData.Entries);
             entries.RemoveAt(0);
             await service.WriteAsync(string.Empty, entries);
 
@@ -120,7 +126,8 @@ namespace Hosts.Tests
             var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
             fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
 
-            var (_, entries) = await service.ReadAsync();
+            var hostsData = await service.ReadAsync();
+            var entries = new List<Entry>(hostsData.Entries);
             var entry = entries[0];
             entry.Address = "10.1.1.10";
             entry.Hosts = "host host.local host1.local";
@@ -172,8 +179,9 @@ namespace Hosts.Tests
             var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
             fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
 
-            var (additionalLines, entries) = await service.ReadAsync();
-            await service.WriteAsync(additionalLines, entries);
+            var hostsData = await service.ReadAsync();
+
+            await service.WriteAsync(hostsData.Unparsed, hostsData.Entries);
 
             var result = fileSystem.GetFile(service.HostsFilePath);
             Assert.AreEqual(result.TextContents, contentResult);
@@ -205,11 +213,25 @@ namespace Hosts.Tests
             var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
             fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
 
-            var (additionalLines, entries) = await service.ReadAsync();
-            await service.WriteAsync(additionalLines, entries);
+            var hostsData = await service.ReadAsync();
+            await service.WriteAsync(hostsData.Unparsed, hostsData.Entries);
 
             var result = fileSystem.GetFile(service.HostsFilePath);
             Assert.AreEqual(result.TextContents, contentResult);
+        }
+
+        [DataTestMethod]
+        [DataRow("10.1.1.1 host host01 host02 host03 host04 host05 host06 host07 host09 # comment", false)]
+        [DataRow("10.1.1.1 host host01 host02 host03 host04 host05 host06 host07 host09 host10 # comment", true)]
+        public async Task Hosts_Exceeding_Max_Found(string content, bool hostsExceedingMaxFound)
+        {
+            var fileSystem = new CustomMockFileSystem();
+            var userSettings = new Mock<IUserSettings>();
+            var service = new HostsService(fileSystem, userSettings.Object, _elevationHelper.Object);
+            fileSystem.AddFile(service.HostsFilePath, new MockFileData(content));
+
+            var hostsData = await service.ReadAsync();
+            Assert.AreEqual(hostsData.HostsExceedingMaxFound, hostsExceedingMaxFound);
         }
     }
 }

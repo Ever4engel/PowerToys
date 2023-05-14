@@ -46,7 +46,14 @@ namespace Hosts.Helpers
                 return false;
             }
 
-            foreach (var host in hosts.Split(' '))
+            var splittedHosts = hosts.Split(' ');
+
+            if (splittedHosts.Length > Consts.MaxHostsCount)
+            {
+                return false;
+            }
+
+            foreach (var host in splittedHosts)
             {
                 if (System.Uri.CheckHostName(host) == System.UriHostNameType.Unknown)
                 {
