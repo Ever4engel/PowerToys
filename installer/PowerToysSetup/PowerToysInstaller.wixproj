@@ -103,6 +103,7 @@ call "..\..\..\publish.cmd" arm64
 
     <Compile Include="AlwaysOnTop.wxs" />
     <Compile Include="Awake.wxs" />
+    <Compile Include="CmdNotFound.wxs" />
     <Compile Include="ColorPicker.wxs" />
     <Compile Include="FancyZones.wxs" />
     <Compile Include="FileExplorerPreview.wxs" />

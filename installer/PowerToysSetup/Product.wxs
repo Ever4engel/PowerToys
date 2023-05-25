@@ -57,6 +57,7 @@
 
       <ComponentGroupRef Id="AlwaysOnTopComponentGroup" />
       <ComponentGroupRef Id="AwakeComponentGroup" />
+      <ComponentGroupRef Id="CmdNotFoundComponentGroup" />
       <ComponentGroupRef Id="ColorPickerComponentGroup" />
       <ComponentGroupRef Id="FancyZonesComponentGroup" />
       <ComponentGroupRef Id="FileExplorerPreviewComponentGroup" />
@@ -486,6 +487,10 @@
             <Directory Id="KeyboardManagerInstallFolder" Name="$(var.KeyboardManagerProjectName)">
               <Directory Id="KeyboardManagerEditorInstallFolder" Name="KeyboardManagerEditor" />
               <Directory Id="KeyboardManagerEngineInstallFolder" Name="KeyboardManagerEngine" />
+            </Directory>
+
+            <!-- Command Not FOund -->
+            <Directory Id="CmdNotFoundInstallFolder" Name="$(var.CmdNotFoundProjectName)">
             </Directory>
 
             <!-- Color Picker -->

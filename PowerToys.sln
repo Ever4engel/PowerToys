@@ -515,6 +515,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilePreviewCommon", "src\co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.PowerToys.Run.Plugin.PowerToys", "src\modules\launcher\Plugins\Microsoft.PowerToys.Run.Plugin.PowerToys\Microsoft.PowerToys.Run.Plugin.PowerToys.csproj", "{500DED3E-CFB5-4ED5-ACC6-02B3D6DC336D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinGetCommandNotFound", "src\modules\cmdNotFound\CmdNotFoundModuleInterface\WinGetCommandNotFound.csproj", "{A37865FE-2881-449F-8ADB-B8CD373D6D79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cmdNotFound", "cmdNotFound", "{4C0D0746-BE5B-49EE-BD5D-A7811628AE8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -2189,6 +2193,18 @@ Global
 		{500DED3E-CFB5-4ED5-ACC6-02B3D6DC336D}.Release|x64.Build.0 = Release|x64
 		{500DED3E-CFB5-4ED5-ACC6-02B3D6DC336D}.Release|x86.ActiveCfg = Release|x64
 		{500DED3E-CFB5-4ED5-ACC6-02B3D6DC336D}.Release|x86.Build.0 = Release|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|ARM64.Build.0 = Debug|ARM64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|x64.ActiveCfg = Debug|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|x64.Build.0 = Debug|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|x86.ActiveCfg = Debug|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Debug|x86.Build.0 = Debug|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|ARM64.ActiveCfg = Release|ARM64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|ARM64.Build.0 = Release|ARM64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|x64.ActiveCfg = Release|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|x64.Build.0 = Release|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|x86.ActiveCfg = Release|x64
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2373,6 +2389,8 @@ Global
 		{929C1324-22E8-4412-A9A8-80E85F3985A5} = {4574FDD0-F61D-4376-98BF-E5A1262C11EC}
 		{9EBAA524-0EDA-470B-95D4-39383285CBB2} = {1AFB6476-670D-4E80-A464-657E01DFF482}
 		{500DED3E-CFB5-4ED5-ACC6-02B3D6DC336D} = {4AFC9975-2456-4C70-94A4-84073C1CED93}
+		{A37865FE-2881-449F-8ADB-B8CD373D6D79} = {4C0D0746-BE5B-49EE-BD5D-A7811628AE8B}
+		{4C0D0746-BE5B-49EE-BD5D-A7811628AE8B} = {4574FDD0-F61D-4376-98BF-E5A1262C11EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3A2F9D1-7930-4EF4-A6FC-7EE0A99821D0}
